@@ -11,9 +11,19 @@ import java.util.List;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.lisp4j.Interpreter;
+import org.lisp4j.exceptions.LispException;
 
+/**
+ * 
+ * @author beinn
+ *
+ */
 public class Main {
-    
+
+    /**
+     * 
+     * @param args
+     */
     public static void main(final String... args) {
         final Options options = new Options();
         final CmdLineParser parser = new CmdLineParser(options);
@@ -29,9 +39,16 @@ public class Main {
             parser.printUsage(System.out);
             System.exit(0);
         }
+
+        if (options.isVersion()) {
+            System.out.println("Java Lisp Interpreter 0.1");
+            System.out.println("Licence: GNU GPLv2 - (C)beinn 2014");
+            System.exit(0);
+        }
+
         final Interpreter interpreter = new Interpreter();
-        
-        for (File file:options.getFiles()) {
+
+        for (File file : options.getFiles()) {
             if (file.exists() && file.isFile() && file.canRead()) {
                 BufferedReader reader = null;
                 try {
@@ -65,13 +82,14 @@ public class Main {
                 }
             }
         }
-        
+
         if (options.isExecuteOnly()) {
             System.exit(0);
         }
-        
+        String prompt = "> ";
         while (!interpreter.isHalted()) {
-            System.out.print(">> ");
+
+            System.out.print(prompt);
             String input = "";
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             try {
@@ -79,13 +97,24 @@ public class Main {
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-            
+            if (":help".equalsIgnoreCase(input)) {
+                System.out.println(":abort");
+            } else if (":abort".equalsIgnoreCase(input)) {
+                System.out.println("Top level.");
+                prompt = "> ";
+            } else if (input.trim().startsWith(":")) {
+                System.err.println(input + " is not break command");
+            }
             try {
                 final List<String> output = interpreter.execute(input);
                 for (final String line : output) {
                     System.out.println(line);
                 }
+            } catch (LispException e) {
+                System.err.println(e.getMessage());
+                prompt = ">> ";
             } catch (Exception e) {
+                System.err.println("INTERPRETER PANIC!");
                 System.err.println(e.getMessage());
             }
         }
