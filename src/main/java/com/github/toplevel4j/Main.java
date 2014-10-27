@@ -1,4 +1,21 @@
-package org.jlisp;
+/*
+ *  toplevel4j - Toplevel Lisp Interpreter for Java
+ *  Copyright (C) 2014 Javier Romo
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package com.github.toplevel4j;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,8 +27,9 @@ import java.util.List;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
-import org.lisp4j.Interpreter;
-import org.lisp4j.exceptions.LispException;
+
+import com.github.lisp4j.Interpreter;
+import com.github.lisp4j.exceptions.LispException;
 
 /**
  * 
@@ -115,7 +133,7 @@ public class Main {
                 prompt = ">> ";
             } catch (Exception e) {
                 System.err.println("INTERPRETER PANIC!");
-                System.err.println(e.getMessage());
+                System.err.println(e);
             }
         }
     }

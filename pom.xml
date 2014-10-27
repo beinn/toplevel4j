@@ -2,9 +2,16 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.jlisp</groupId>
+    <groupId>com.github.beinn</groupId>
     <version>0.1</version>
-    <artifactId>jlisp</artifactId>
+    <artifactId>toplevel4j</artifactId>
+
+    <licenses>
+        <license>
+            <name>GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007</name>
+            <url>http://www.gnu.org/copyleft/gpl.html</url>
+        </license>
+    </licenses>
 
     <dependencies>
         <dependency>
@@ -13,9 +20,9 @@
             <version>2.0.29</version>
         </dependency>
         <dependency>
-            <groupId>org.lisp4j</groupId>
+            <groupId>com.github.beinn</groupId>
             <artifactId>lisp4j</artifactId>
-            <version>0.1</version>
+            <version>0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
