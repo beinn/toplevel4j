@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.toplevel4j;
+package com.github.beinn.toplevel4j;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,8 +28,8 @@ import java.util.List;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import com.github.lisp4j.Interpreter;
-import com.github.lisp4j.exceptions.LispException;
+import com.github.beinn.lisp4j.Interpreter;
+import com.github.beinn.lisp4j.exceptions.LispException;
 
 /**
  * 
