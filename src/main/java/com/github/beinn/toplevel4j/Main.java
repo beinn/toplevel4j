@@ -22,7 +22,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.List;
 
 import org.kohsuke.args4j.CmdLineException;
@@ -43,6 +45,10 @@ public class Main {
      * @param args
      */
     public static void main(final String... args) {
+        final InputStream stdin = System.in;
+        final OutputStream stdout = System.out;
+        final OutputStream stderr = System.err;
+        
         final Options options = new Options();
         final CmdLineParser parser = new CmdLineParser(options);
         try {
@@ -50,11 +56,11 @@ public class Main {
         } catch (CmdLineException e) {
             System.err.println(e.getMessage());
             System.err.println("java -jar jLisp.jar [files...] [options...]");
-            parser.printUsage(System.err);
+            parser.printUsage(stderr);
         }
         if (options.isShowHelp()) {
             System.out.println("java -jar jLisp.jar [files...] [options...]");
-            parser.printUsage(System.out);
+            parser.printUsage(stdout);
             System.exit(0);
         }
 
@@ -64,8 +70,17 @@ public class Main {
             System.exit(0);
         }
 
-        final Interpreter interpreter = new Interpreter();
+        try {
+            new Main().console(options, stdin, stdout, stderr);
+        } catch (IOException e) {
+            System.err.println(e);
+            System.exit(-1);
+        }
+        System.exit(0);
+    }
 
+    private void console(final Options options, final InputStream stdin, final OutputStream stdout, final OutputStream stderr) throws IOException {
+        final Interpreter interpreter = new Interpreter();
         for (File file : options.getFiles()) {
             if (file.exists() && file.isFile() && file.canRead()) {
                 BufferedReader reader = null;
@@ -75,7 +90,7 @@ public class Main {
                     while (line != null) {
                         List<String> output = interpreter.execute(line);
                         for (final String outLine : output) {
-                            System.out.println(outLine);
+                            stdout.write(outLine.getBytes());
                         }
                         if (interpreter.isHalted()) {
                             System.exit(0);
@@ -107,9 +122,10 @@ public class Main {
         String prompt = "> ";
         while (!interpreter.isHalted()) {
 
-            System.out.print(prompt);
+            stdout.write(prompt.getBytes());
             String input = "";
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stdin));
             try {
                 input = reader.readLine();
             } catch (IOException e1) {
