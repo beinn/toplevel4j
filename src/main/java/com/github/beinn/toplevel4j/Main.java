@@ -48,7 +48,7 @@ public class Main {
         final InputStream stdin = System.in;
         final OutputStream stdout = System.out;
         final OutputStream stderr = System.err;
-        
+
         final Options options = new Options();
         final CmdLineParser parser = new CmdLineParser(options);
         try {
@@ -69,8 +69,10 @@ public class Main {
             System.out.println("Licence: GNU GPLv2 - (C)beinn 2014");
             System.exit(0);
         }
-
+        
         try {
+            stdout.write(("toplevel4j  Copyright (C) 2014  Javier Romo\n"
+                        + "This program comes with ABSOLUTELY NO WARRANTY;\n").getBytes());
             new Main().console(options, stdin, stdout, stderr);
         } catch (IOException e) {
             System.err.println(e);
@@ -79,7 +81,7 @@ public class Main {
         System.exit(0);
     }
 
-    private void console(final Options options, final InputStream stdin, final OutputStream stdout, final OutputStream stderr) throws IOException {
+    protected void console(final Options options, final InputStream stdin, final OutputStream stdout, final OutputStream stderr) throws IOException {
         final Interpreter interpreter = new Interpreter();
         for (File file : options.getFiles()) {
             if (file.exists() && file.isFile() && file.canRead()) {
@@ -124,25 +126,30 @@ public class Main {
 
             stdout.write(prompt.getBytes());
             String input = "";
-            
+
             BufferedReader reader = new BufferedReader(new InputStreamReader(stdin));
             try {
                 input = reader.readLine();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-            if (":help".equalsIgnoreCase(input)) {
-                System.out.println(":abort");
-            } else if (":abort".equalsIgnoreCase(input)) {
+            if (input == null) {
+                break;
+            }
+            if (":help".equalsIgnoreCase(input) || ":h".equalsIgnoreCase(input)) {
+                System.out.println(":abort [:a]");
+                System.out.println(":help [:h]");
+            } else if (":abort".equalsIgnoreCase(input) || ":a".equalsIgnoreCase(input)) {
                 System.out.println("Top level.");
                 prompt = "> ";
             } else if (input.trim().startsWith(":")) {
                 System.err.println(input + " is not break command");
+                System.err.println("enter :help [:h] to get more information");
             }
             try {
                 final List<String> output = interpreter.execute(input);
                 for (final String line : output) {
-                    System.out.println(line);
+                    stdout.write((line + "\n").getBytes());
                 }
             } catch (LispException e) {
                 System.err.println(e.getMessage());

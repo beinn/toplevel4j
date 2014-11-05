@@ -18,14 +18,51 @@
 
 package com.github.beinn.toplevel4j;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.junit.Test;
 
 
 public class MainTest {
 
     @Test
-    public void Main() {
-        Main.main();
+    public void console() throws IOException {
+        Main main = new Main();
+        Options options = new Options();
+        InputStream stdin = new ByteArrayInputStream("(quit)".getBytes());
+        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+        ByteArrayOutputStream stderr = new ByteArrayOutputStream();
+        main.console(options, stdin, stdout, stderr);
+        assertEquals("",stderr.toString());
+        assertEquals("> Bye!\n",stdout.toString());
     }
 
+    @Test
+    public void console2() throws IOException {
+        Main main = new Main();
+        Options options = new Options();
+        InputStream stdin = new ByteArrayInputStream("(+ 2 3)(quit)".getBytes());
+        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+        ByteArrayOutputStream stderr = new ByteArrayOutputStream();
+        main.console(options, stdin, stdout, stderr);
+        assertEquals("",stderr.toString());
+        assertEquals("> 5.0\nBye!\n",stdout.toString());
+    }
+    
+    @Test
+    public void console3() throws IOException {
+        Main main = new Main();
+        Options options = new Options();
+        InputStream stdin = new ByteArrayInputStream("(+ 2 3))".getBytes());
+        ByteArrayOutputStream stdout = new ByteArrayOutputStream();
+        ByteArrayOutputStream stderr = new ByteArrayOutputStream();
+        main.console(options, stdin, stdout, stderr);
+        assertEquals("",stderr.toString());
+        assertEquals("> >> ",stdout.toString());
+    }
 }
